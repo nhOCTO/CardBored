@@ -1,0 +1,15 @@
+var fileTypes = {
+    'image/png': 'image-',
+    'image/jpeg': 'image-',
+    'application/msword': 'word-',
+    'application/vnd_openxmlformatsfficedocument_wordprocessingml_document': 'word-',
+    'application/vnd_ms-powerpoint': 'powerpoint-',
+    'application/vnd_openxmlformatsfficedocument_presentationml_presentation': 'powerpoint-',
+    'application/vnd_ms-excel': 'excel-',
+    'application/vnd_openxmlformatsfficedocument_spreadsheetml_sheet': 'excel-',
+    'application/pdf': 'pdf-',
+    'text/plain': 'text-',
+    'text/x-sql': 'code-',
+    'text/x-c': 'code-',
+    'application/zip': 'archive-',
+}

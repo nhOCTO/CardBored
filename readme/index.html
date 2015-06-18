@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Better Canvas | Readme</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:700,400,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="r.css">
+    <link rel="stylesheet" href="lEditor.css">
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script type="text/javascript" src="lEditor.js"></script>
+    <script type="text/javascript">
+        var dh_wh;
+        function cb (msg) {$('#msg').val(msg);}
+        function submit() {
+            $.ajax({
+                type: 'POST',
+                url:'../php/mail.php', 
+                data:{'message': $('#msg').val()},
+                success:function(){$('#submit').text('提交成功');},
+                fail:function(){$('#submit').text('提交失败');}
+            });
+            $('#submit').off('click');
+            $('#submit').text('提交中...');
+        }
+        $(window).load(function(){
+            $('#fb-box').lEditor({
+                tab: 'on',
+                height: '220px',
+                color: '#111',
+                toolbar: ['undo', 'style', 'color', 'list', 'link', 'remove '],
+                full_screen: true,
+                button_size: '16px',
+                about: 'on',
+                callback: cb
+            });
+            dh_wh = $(document).height() - $(window).height();
+            $(window).scroll(function(){
+                var sc = $(document).scrollTop();
+                $('#white').css('top', sc/3.5);
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="white">
+        <div id="t1">Better</div>
+        <div id="t2">Canvas</div>
+        <div id="t3">—— A <span style="color:#2567c3;">confortable</span>, <span style="color:#5025c3;">beautiful</span> and <span style="color:#a525c3;">lightweight</span> Canvas client</div>
+    </div>
+    <div id="main">
+        <div id="easy">
+            <h4>最友好的Canvas客户端  </h4>
+            <h2 style="color:#b0e5f8;">易</h2>
+            
+            <p>
+                Better Canvas目前可以一直<span class="strong">保持登录</span>，省下了官方版Canvas每次需要先等待加载登录页面，并输入密码的时间。
+            </p>
+            <p>
+                在官方版的Canvas中，进入某个课程(Course)或在课程间切换需要鼠标移上顶栏，等待其加载并展开后才能选择具体课程。Better Canvas将所有课程<span class="strong">如书签般列在左侧</span>，直接点击即可切换；而在选择课程后，顶部的<span class="strong">标签栏</span>使通知、作业、讨论等各项功能的切换依旧方便。
+            </p>
+            <p>
+                在通知(Announcement)，讨论(Discussion)等其他界面，官方版Canvas会先展示出一张通知列表，列表中的每一项只有第一行内容的预览(并没有卵用)。当你想查看某条通知的全部内容时，居然还需要等浏览器打开一个新窗口，并重新加载所有界面元素(但你只是想看通知的后半部分文字而已)；当你看完通知，后退到通知列表时，居然还要等他全部刷新！Better Canvas永不打开新窗口，所有列表项目均能<span class="strong">直接点击展开和折叠</span>内容。此功能适用于通知、讨论、作业(Assignments)和页面(Pages)。
+            </p>
+            <p>
+                Better Canvas同时有其他贴心的功能，如<span class="strong">回到顶部</span>按钮，在页面内容较多时可以快速回到顶部的工具栏。如果你对Better Canvas感兴趣，请在页面最后留下你心目中Canvas该有的功能。
+            </p>
+            <div class="img-div"><img src="sc.png" width="80%" alt="tabs"/></div>
+        </div>
+        <div id="buti">
+            <h4>「你自己的Canvas」  </h4>
+            <h2 style="color:#f8b0d1;">美</h2>
+            <p>
+                Canvas作为每天都会使用的应用，想必你多少对它灰+红的页面有些审美疲劳(呃，它其实不需要审美)。Better Canvas在致力提高它的易用性的同时，也希望拥有丰富的个性化界面。目前的Better Canvas使用更漂亮的字体和更大的字号，并运用<span class="strong">透明</span>、<span class="strong">阴影</span>等CSS效果，给你更好的使用体验。同时它支持<span class="strong">更换背景图片</span>(有人吐槽过为什么我做的东西全都可以换背景图片)，而且只要图片好，视觉效果就不会差。日后会根据情况加入更换主题等功能。
+            </p>
+            <div class="img-div"><img src="bg1.png" width="40%" alt="bg1"/><img src="bg2.png" width="40%" alt="bg2"/></div>
+            <div class="img-div"><img src="bg3.png" width="40%" alt="bg3"/><img src="bg4.png" width="40%" alt="bg4"/></div>
+        </div>
+        <div id="light">
+            <h4>快，不需说明  </h4>
+            <h2 style="color:#b0f8c1;">轻</h2>
+            <p>
+                Canvas是一个功能繁杂的平台，它80%的功能可能平时都不会被用到。Better Canvas专注于同学们平时常用的功能，并希望能够因此更轻便和灵敏。由于所有操作只在一个网页中进行，它<span class="strong">节省</span>了许多不必要的新页面渲染时间。同时，它最大化地利用API所返回的信息，<span class="strong">避免重复请求</span>。
+            </p>
+            <p>由于某些原因，Better Canvas中的每项操作仍然需要一点时间等待学校服务器的反应。如果你在使用OSX上的<span class="strong">Safari</span>(和我一样)，可以尝试下载一份纯js的版本，该版本的反应速度更要快上几倍。</p>
+            <table>
+                <tbody>
+                    <tr>
+                        <td rowspan="2" class="left">加载讨论(Discussion)页面</td>
+                        <td>官方Canvas</td>
+                        <td><div style="width:142.5px"></div></td>
+                        <td>5.70s</td>
+                    </tr>
+                    <tr>
+                        <td class="blue">BetterCanvas</td>
+                        <td class="bar"><div style="width:51.5px"></div></td>
+                        <td>2.06s</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2" class="left">打开一个讨论条目(包括加载所有回复(Replies))</td>
+                        <td>官方Canvas</td>
+                        <td class="bar"><div style="width:102.75px"></div></td>
+                        <td>4.11s</td>
+                    </tr>
+                    <tr>
+                        <td class="blue">BetterCanvas</td>
+                        <td class="bar"><div style="width:37.5px"></div></td>
+                        <td>1.50s</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2" class="left">打开文件(Files)列表</td>
+                        <td>官方Canvas</td>
+                        <td class="bar"><div style="width:69px"></div></td>
+                        <td>2.76s</td>
+                    </tr>
+                    <tr>
+                        <td class="blue">BetterCanvas</td>
+                        <td class="bar"><div style="width:27.75px"></div></td>
+                        <td>1.11s</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2" class="left">打开一条通知(Announcement)</td>
+                        <td>官方Canvas</td>
+                        <td class="bar"><div style="width:52px"></div></td>
+                        <td>2.08s</td>
+                    </tr>
+                    <tr>
+                        <td class="blue">BetterCanvas</td>
+                        <td class="bar"><div style="width:1px"></div></td>
+                        <td>0s - 是的！</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="try">
+            <p>Better Canvas现在仍然在测试中。如果你能试用一下并提出意见，再好不过。</p>
+            <div id="try-button" onclick="window.open('../', '_blank')">试用 Better Canvas</div>
+            <p style="color:#777">* 点击使用表示你同意 Better Canvas 访问你的 Canvas 账户。目前仅供测试使用，请勿用于其他用途。如果遇到由于代码缺陷造成的问题等，恕不负责。</p>
+        </div>
+    </div>
+    <div id="about">
+        <div id="fb">
+            <h2>反馈</h2>
+            <p>如果你有任何想说的，不管是意见、吐槽，还是无关的闲聊或滚键盘，都可在下面留言并请同时留下联系方式：（或者请直接联系我）</p>
+            <div id="fb-box"></div>
+            <textarea id="msg" cols="30" rows="10" hidden="hidden"></textarea>
+            <div id="submit" onclick="submit()">提交</div>
+        </div>
+        <div id="me">
+            <h2>关于</h2>
+            <p>lhc，CityU 准yr3，懒。(<a href="mailto:hechenli2-c@cityu.edu.hk">邮件</a>) <br/>
+            <s>呃，并没有什么值得一提的东西。</s></p>
+        </div>
+    </div>
+</body>
+</html>

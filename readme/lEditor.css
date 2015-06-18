@@ -1,0 +1,231 @@
+@import url('../font-awesome/css/font-awesome.min.css');
+
+body.fullscreen-mode {
+    overflow: hidden;
+}
+
+.lEditor-container {
+/*
+    border-top: 1px solid #aaa;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+*/
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    color: #000;
+    text-align: left;
+    font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+}
+
+
+.lEditor-toolbar {
+    color: #444; /* button color */
+    background-color: #efefef;
+    border-bottom: 1px solid #bcbcbc;
+    padding: 0 5px;
+    overflow-x: auto;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+}
+
+.lEditor-button-group {
+    display: inline-block;
+    margin: 5px 2px;
+    border-right: 1px solid #aaa;
+    padding-right: 4px;
+    vertical-align: middle;
+}
+
+.lEditor-button-group:last-child {
+    border: none;
+    padding-right: 0;
+}
+
+.lEditor-button {
+    display: inline-block;
+    margin: 0 1px;
+    padding: 2px 6px;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.lEditor-button:hover, .lEditor-button-hilighted {
+/*    text-shadow: 0 0 8px #999;*/
+    background-color: #333;
+    color: #ccc;
+}
+
+.lEditor-button-hilighted {
+    
+}
+
+.lEditor-font-div, .lEditor-color-div, .lEditor-link-div {
+    text-align: left;
+    color: #000;
+    background-color: #eee;
+    border: 1px solid #aaa;
+    border-radius: 2px;
+    box-shadow: 0 0 8px #aaa;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* font */
+.lEditor-font-text {
+    display: inline-block;
+    font-size: 14px;
+    margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.lEditor-font-div {
+    font-size: 14px;
+    width: 125px;
+    height: 150px;
+}
+
+.lEditor-font-list {
+    margin: 2px 0;
+    padding: 0 5px;
+    list-style: none;
+}
+
+.lEditor-font-list li {
+    padding: 2px 1px;
+    cursor: pointer;
+}
+
+.lEditor-font-list li:hover {
+    background-color: #bbb;
+}
+
+/* color */
+
+.lEditor-color-div {
+    width: 140px;
+    height: 140px;
+    padding: 4px;
+}
+
+.lEditor-color-box {
+    display: inline-block;
+    vertical-align: middle;
+    width: 24px;
+    height: 24px;
+    margin: 2px;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.lEditor-color-box:hover {
+    box-shadow: 0 0 4px #555;
+}
+
+/* link */
+
+.lEditor-input-text {
+    font-size: 14px;
+    width: 100%;
+    height: 20px;
+    border: 1px solid #aaa;
+    border-radius: 2px;
+    margin-top: 4px;
+    padding: 2px 0;
+    vertical-align: middle;
+}
+
+.lEditor-input-text:focus {
+    outline: none;
+    box-shadow: 0 0 4px #999;
+}
+
+.lEditor-okbutton {
+    color: #fff;
+    width: 100%;
+    height: 20px;
+    border: 1px solid #aaa;
+    border-radius: 2px;
+    background-color: #00cc86;
+    margin-top: 10px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.lEditor-okbutton:hover {
+    background-color: #00a069;
+}
+
+.lEditor-link-div {
+    width: 150px;
+    height: 84px;
+    padding: 8px;
+}
+
+.lEditor-link-div h4 {
+    font-size: 14px;
+    margin: 0;
+}
+
+.lEditor-frame {
+    background-color: #fff;
+    border: none;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    box-shadow: 0 0 2px #ddd inset;
+}
+
+.lEditor-hint-div {
+    position: absolute;
+    display: inline-block;
+    text-align: left;
+    background-color: #111;
+    border-radius: 2px;
+    color: #fff;
+    opacity: 0.8;
+    padding: 0 2px;
+    font-size: 12px;
+}
+
+.lEditor-tab-container {
+    margin: 4px 30px 2px 5px;
+    border-bottom: 1px solid #aaa;
+}
+
+.lEditor-tab {
+    color: #aaa;
+    display: inline-block;
+    width: 80px;
+    padding: 4px 0;
+    margin-bottom: -1px;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.lEditor-tab:hover {
+    font-weight: bold;
+}
+
+.lEditor-tab-active {
+    color: #444;
+    cursor: default;
+    font-weight: bold;
+/*
+    border-top: 1px solid #aaa;
+    border-left: 1px solid #aaa;
+    border-right: 1px solid #aaa;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+*/
+    border-bottom: 2px solid #444;
+}
+
+.lEditor-tab-page {
+    margin-right: 30px;
+}
