@@ -1,20 +1,27 @@
 var api, needLogin = false;
 
 (function (window, document, undefined) {
-    //var ahref = 'https://canvas.cityu.edu.hk/api/v1/';
-    //var ahref = 'http://localhost/~admin/test/index.php'
-    var ahref = 'php/index.php'
-    var pwd = '1839~YOmpTKlPYL4pmcIpn1SwF5p84LPLevBkeLpCUfUpLBzJEl38h293DLFgfzsudueE';
-    //pwd = '1839~njr2Agp51FQdzQjk3w8PZC47rpNklqbwcIxizoeGYg84nfeXMWCIZQVW3gkNUg2W';
-    if (localStorage && localStorage.pwd && localStorage.pwd != 'undefined') 
-        pwd = localStorage.pwd;
+
+    var ahref = 'php/index.php',
+        nhref = 'php/nya.php';
+    var pwd = '///';
+    
+    if (cookiePwd = docCookies.getItem('bcid')) 
+        pwd = cookiePwd;
     else
         needLogin = true;
         
     api = {
         setPwd: function(newPwd){
             pwd = newPwd;
-            localStorage.pwd = newPwd;
+            docCookies.removeItem('bcid');
+            docCookies.setItem('bcid', newPwd, 31536e3);
+        },
+        requestPwd: function(pwd){
+            return $.ajax({
+                url: nhref + '?neko=' + pwd,
+                method: 'GET'
+            });
         },
         link: function(l){
             return $.ajax({
@@ -131,6 +138,13 @@ var api, needLogin = false;
         files: function(folder_id){
             return $.ajax({
                 url: ahref + '?type=files&folder_id='+folder_id,
+                method: 'GET',
+                headers: {'Access-token': pwd}
+            });
+        },
+        quiz_submission: function(course_id, quiz_id) {
+            return $.ajax({
+                url: ahref + '?type=quizsubmit&cid=' + course_id + '&qzid=' + quiz_id,
                 method: 'GET',
                 headers: {'Access-token': pwd}
             });

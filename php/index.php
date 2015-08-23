@@ -1,21 +1,39 @@
 <?php
 
+include_once("phpcrypt/phpCrypt.php");
+use PHP_Crypt\PHP_Crypt as PHP_Crypt;
+
 $q = $_GET["type"];
 $token;
+$token_e;
 $url_for_url_type;
 
 foreach (getallheaders() as $name => $value) {
     if ($name == "Access-token")
-        $token = $value;
+        $token_e = $value;
     if ($name == "Url-for-url-type")
         $url = $value;
 }
 
+function getNeko ($warui_neko) {
+    $key = "canv{$_SERVER['DOCUMENT_ROOT']}lhc70000";
+    $crypt = new PHP_Crypt($key, PHP_Crypt::CIPHER_AES_128, PHP_Crypt::MODE_CBC);  
+    $all = $warui_neko;
+    $len = strlen($all);
+    $iv2 = pack('H*', substr($all, -32));
+    $neko_a = pack('H*', substr($all, 0, $len-32));
+    $crypt->IV($iv2);
+    $decrypt = $crypt->decrypt($neko_a);
+    return $decrypt;
+}
+
+$token = getNeko($token_e);
+
 $curl = curl_init();
 curl_setopt($curl, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $token));
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_VERBOSE, 1);
-    curl_setopt($curl, CURLOPT_HEADER, 1);
+curl_setopt($curl, CURLOPT_VERBOSE, 1);
+curl_setopt($curl, CURLOPT_HEADER, 1);
  
 
 if (!function_exists('http_parse_headers'))
@@ -55,10 +73,6 @@ if (!function_exists('http_parse_headers'))
 
         return $headers;
     }
-}
-
-function HandleHeader ($ch, $header_line) {
-   //echo($header_line);
 }
 
 if ($q == "self") {
@@ -120,6 +134,10 @@ if ($q == "self") {
 } else if ($q == "files") {
     $folder_id = $_GET["folder_id"];
     curl_setopt($curl, CURLOPT_URL, "https://canvas.cityu.edu.hk/api/v1/folders/" . $folder_id . "/files?per_page=100");
+} else if ($q == "quizsubmit") {
+    $cid = $_GET["cid"];
+    $qzid = $_GET["qzid"];
+    curl_setopt($curl, CURLOPT_URL, "https://canvas.cityu.edu.hk/api/v1/courses/" . $cid . "/quizzes/" . $qzid . "/submissions");
 }
 
 // send request

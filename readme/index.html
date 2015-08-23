@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="lEditor.css">
     <script type="text/javascript" src="../js/jquery.min.js"></script>
     <script type="text/javascript" src="lEditor.js"></script>
+    <script type="text/javascript" src="ga2.js"></script>
     <script type="text/javascript">
         var dh_wh;
         function cb (msg) {$('#msg').val(msg);}
@@ -16,7 +17,7 @@
                 type: 'POST',
                 url:'../php/mail.php', 
                 data:{'message': $('#msg').val()},
-                success:function(){$('#submit').text('提交成功');},
+                success:function(){$('#submit').text('提交成功').attr('disabled', 'disabled');},
                 fail:function(){$('#submit').text('提交失败');}
             });
             $('#submit').off('click');
@@ -27,7 +28,7 @@
                 tab: 'on',
                 height: '220px',
                 color: '#111',
-                toolbar: ['undo', 'style', 'color', 'list', 'link', 'remove '],
+                toolbar: ['undo', 'style', 'color', 'list', 'link', 'remove'],
                 full_screen: true,
                 button_size: '16px',
                 about: 'on',
@@ -134,7 +135,7 @@
         <div id="try">
             <p>Better Canvas现在仍然在测试中。如果你能试用一下并提出意见，再好不过。</p>
             <div id="try-button" onclick="window.open('../', '_blank')">试用 Better Canvas</div>
-            <p style="color:#777">* 点击使用表示你同意 Better Canvas 访问你的 Canvas 账户。目前仅供测试使用，请勿用于其他用途。如果遇到由于代码缺陷造成的问题等，恕不负责。</p>
+            <p style="color:#777">* 点击使用表示你同意 Better Canvas 访问你的 Canvas 账户。目前仅供测试使用，请勿用于其他用途。如果遇到此应用不稳定等所造成的问题，恕不负责。</p>
         </div>
     </div>
     <div id="about">
@@ -147,8 +148,8 @@
         </div>
         <div id="me">
             <h2>关于</h2>
-            <p>lhc，CityU 准yr3，懒。(<a href="mailto:hechenli2-c@cityu.edu.hk">邮件</a>) <br/>
-            <s>呃，并没有什么值得一提的东西。</s></p>
+            <p>lhc，CityU yr3，懒。(<a href="mailto:hechenli2-c@cityu.edu.hk">邮件</a>) <br/>
+            <s>其他的并没有什么值得一提的东西。</s></p>
         </div>
     </div>
 </body>

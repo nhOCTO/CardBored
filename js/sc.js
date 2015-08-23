@@ -2,7 +2,7 @@
     
     var _courses, 
         _currSections,
-        _uid, _account_id,
+        _uid, _account_id, _userObj,
         _$main;
 
     var _currCourse,  // string = cid
@@ -50,11 +50,16 @@
                                   '</h3><p>'+noti.message+'</p></div>');
                     _$main.append($noti);
                 }
+                if (n[0].length == 0) {
+                    _$main.append('<div class="noti-item"><p>No recent notifications.</p></div>');
+                }
                 // acti
                  _$main.append('<h2>Recent Activities</h2>');
                 for (var i in a[0]) {
                     var acti = a[0][i];
-                    var $acti = $('<div class="noti-item"><h3><i class="fa fa-calendar-o"></i>  '+acti.title+'</h3><p>'+noti.message+'</p></div>');
+                    var $acti = $('<div class="noti-item"><h3><i class="fa fa-calendar-o"></i>  '+acti.title+'</h3>\
+                                    <h4>'+acti.updated_at.replace(/[TZ]/g,' ')+' | '+acti.notification_category+'</h4>\
+                                    <p>'+acti.message.replace(/\n{5}[^`]+?$/g,'').replace(/\n/g,'<br>')+'</p></div>');
                     _$main.append($acti);
                 }
                 if (wait) utils.hideWait();
@@ -95,7 +100,7 @@
                         $('#toolbar').append($item);
                     } else if (t[i].id == 'collaborations') {
                         var $item = builders.toolbarItem('globe', 'collaborations');
-                        $item.click(function(){load.announcement(_currCourse);});
+                        $item.click(function(){utils.showMsg('Not supported...');});
                         $('#toolbar').append($item);
                     }
                 }
@@ -106,7 +111,7 @@
                         $('#toolbar').prepend($item);
                 }
                 load.frontpage(_currCourse); 
-            });
+            }).fail(utils.fail);
         },
         frontpage: function(cid){
             utils.showWait();
@@ -183,6 +188,9 @@
                     });
                     _$main.append($annItem);
                 }
+                if (a.length == 0) {
+                    _$main.append($('<div class="ann-item"><div class="ann-main anime-box"><p>Empty</p></div></div>'));
+                }
                 if (!isMore) utils.tabChange(discussion ? 'discussions' : 'announcements');
                 // since tabChange unbind the scroll event
                 $(window).scroll(function(){
@@ -226,12 +234,22 @@
                             // folded
                             $detail.css('white-space', 'normal');
                             $detail.html(msg);
-                            if (clickedAsg.has_submitted_submissions) {
+                            if (clickedAsg.submission_types[0] == 'online_upload' && clickedAsg.has_submitted_submissions) {
                                 utils.showWait();
                                 $.when(api.submission(cid, this.id, _uid)).done(function(s){
                                     var $subDetail = $('<tr class="asg-sub-detail">'+
                                                         '<td><span>Submitted at '+s.submitted_at.replace('T',' ').slice(0,-1)+'</span>  | <i class="fa fa-download"></i><a class="link" href="'+clickedAsg.submissions_download_url+'">DOWNLOAD</a></td>'+
                                                         '<td class="asg-grade"><b>'+(clickedAsg.grading_type=='letter_grade'?s.grade:'')+'</b><span>'+(s.score?s.score:'Not yet graded')+'/'+clickedAsg.points_possible+'</span></td></tr>');
+                                    $this.find('tbody').append($subDetail);
+                                    utils.hideWait();
+                                }).fail(utils.fail);
+                            } else if (clickedAsg.quiz_id) {
+                                var qzid = clickedAsg.quiz_id;
+                                $.when(api.quiz_submission(cid, qzid)).done(function(s){
+                                    var qs = s.quiz_submissions[0];
+                                    var $subDetail = $('<tr class="asg-sub-detail">'+
+                                                        '<td><span>Submitted at '+qs.finished_at.replace('T',' ').slice(0,-1)+'</span></td>'+
+                                                        '<td class="asg-grade"><b>'+qs.score+'/'+clickedAsg.points_possible+'</span></td></tr>');
                                     $this.find('tbody').append($subDetail);
                                     utils.hideWait();
                                 }).fail(utils.fail);
@@ -367,10 +385,17 @@
         failFrontPage: function(jqXHR, textStatus, errorThrown){
             utils.hideWait();
             if (jqXHR.status == 404) {
-                _$main.empty();
-                var $alert = ('<div class="frontpage-alert"><br/><br/><br/><br/>This course does not have a front page</div>');
-                _$main.append($alert);
-                utils.tabChange('home');
+                if (_currCourseObj.default_view == 'assignments') {
+                    load.assignments(_currCourse);
+                } else if (_currCourseObj.default_view == 'syllabus') {
+                    load.syllabus(_currCourse);
+                } else {
+                    _$main.empty();
+                    var $alert = ('<div class="frontpage-alert"><br/><br/><br/><br/>This course does not have a front page</div>');
+                    _$main.append($alert);
+                    utils.tabChange('home');
+                }
+                $('#title').text(_currCourseObj.name);
             } else {
                 utils.showMsg(jqXHR.status + ' ' + errorThrown);
             }
@@ -378,9 +403,9 @@
         },
         tabChange: function(newTabName) {
             $(window).off('scroll');
+            if (_currTabElement) _currTabElement.removeClass('toolbar-item-active');
             var $newTab = $('#'+newTabName);
             $newTab.addClass('toolbar-item-active');
-            if (_currTabElement) _currTabElement.removeClass('toolbar-item-active');
             _currTabElement = $newTab;
         },
         showWait: function() {
@@ -429,18 +454,22 @@
     
     var settings = {
         about: function() {
-            var $about = $('<div><h2>Better Canvas</h2><p>v 0.1</p>'+
-                              '<p>by lhc <br/>( <a href="mailto:lhc199652@gmail.com">lhc199652@gmail.com</a> )</p></div>');
+            var $about = $('<div><h2>Better Canvas</h2><p>v 0.11</p>\
+                            <p>by lhc ( <a href="mailto:lhc199652@gmail.com">lhc199652@gmail.com</a> )</p>\
+                            <p>Click for <a href="./readme" target="_blank">Info</a> or <a href="./readme/index.html#about" target="_blank">Feedback</a></p></div>');
             settings.showAlertBox($about, true);
         },
         login: function(callback){
             var $login = $('<div><h2>Please enter your access token</h2>'+
-                           '<p>Better Canvas cannot fetch your information. It may caused by : <br/>A) You do not have an access token, <br/>B) Your access token has expired, <br/>C) Your access token is not correct. <br/>Please enter a valid access token below:'+
-                           '<p>由于现在各项功能尚未完备，你不需要输入你的邮箱密码，而是你的一个「Access Token」。Access Token 很容易获得，<a href="readme/access_token.html">点击这里查看如何获得 Access Token</a></p>'+
+                           '<p>Better Canvas cannot fetch your information. It may caused by : <br/>A) You do not have an access token, <br/>B) Your access token has expired, <br/>C) Your access token is incorrect. <br/>Please enter a valid access token below:'+
+                           '<p>由于现在各项功能尚未完备，你不需要输入你的邮箱密码，而是你的一个「Access Token」。Better Canvas将仅使用它来访问你的Canvas账户并完成你允许的操作，并将其加密存储。Access Token 很容易获得，<a href="readme/access_token.html">点击这里查看如何获得 Access Token</a></p>'+
                            '<input type="text" id="input-access"></input></p></div>'),
                 $okBtn = $('<div id="alert-close-btn">OK</div>');
             $okBtn.click(function(){
-                api.setPwd($login.find('#input-access').val());
+                $.when(api.requestPwd($login.find('#input-access').val())).done(function(p){
+                    api.setPwd(p);
+                    window.location.reload();
+                });
                 utils.showWait();
                 $.when(api.self()).done(function(){
                     utils.hideWait();
@@ -454,20 +483,30 @@
         },
         changeUser : function(){
             var $login = $('<div><h2>Change user</h2>'+
-                           '<p>Please enter another access token below:'+
+                           '<p>Please enter another access token below. Leave blank if you don\'t want to change user.:'+
                            '<input type="text" id="input-access"></input></p></div>'),
                 $okBtn = $('<div id="alert-close-btn">OK</div>');
             $okBtn.click(function(){
                 var newPw = $login.find('#input-access').val();
                 if (newPw.length>10) {
                     api.setPwd(newPw);
-                    window.location.reload();
+                    $.when(api.requestPwd(newPw)).done(function(p){
+                        api.setPwd(p);
+                        window.location.reload();
+                    });
                 }
             });
             settings.showAlertBox($login, false, $okBtn);
         },
         changeBg : function(){
-            var $changeBg = $('<div><h2>Change background</h2><p>Please enter background image URL:</p>'+
+            var $changeBg = $('<div><h2>Change background</h2>\
+                                <p>Please choose from default backgrounds:<br/>\
+                                <a href="#" onclick="$(\'#input-bg\').val(\'img/1.jpg\')">Milky Way</a> | \
+                                <a href="#" onclick="$(\'#input-bg\').val(\'img/2.jpg\')">Purple (Default)</a> | \
+                                <a href="#" onclick="$(\'#input-bg\').val(\'img/3.jpg\')">Orange</a> | \
+                                <a href="#" onclick="$(\'#input-bg\').val(\'img/4.jpg\')">Miku</a>\
+                                </p>\
+                                <p>Or enter background image URL:<br/>'+
                               '<input type="text" id="input-bg"></input></p></div></div>'),
                  $okBtn = $('<div id="alert-close-btn">OK</div>');
             $okBtn.click(function(){
@@ -481,7 +520,7 @@
         },
         showAlertBox: function($content, defaultCloseBtn, $customBtn){
             var $alertBox = $('<div class="alert-box"></div>').hide(),
-                $bodyMask = $('<div style="position:fixed;top:0;width:100%;background-color:rgba(0,0,0,.8);"></div>').hide();
+                $bodyMask = $('<div class="overlay"></div>').hide();
             $alertBox.append($content);
             // btn
             if (defaultCloseBtn)
@@ -508,6 +547,7 @@
         // set appearance
         $('#wrapper, #courses-div, #detail-div').css('min-height', $(window).height()-130);
         $('#detail-div').css('margin-left', $('#courses-div').width()+'px');
+        $(window).on('resize', function(){$('#detail-div').css('margin-left', $('#courses-div').width()+'px');});
         if (!localStorage.bgImgURL || localStorage.bgImgURL == 'undefined')
             localStorage.bgImgURL= 'img/b.jpg';
         $('body').css('background-image', 'url('+localStorage.bgImgURL+')');
@@ -543,10 +583,27 @@
 
             // request self
             $.when(api.self()).done(function(u){
+                _userObj = u;
                 _uid = u.id;
-                $('#avatar-img').attr('src', u.avatar_url);
                 $.when(api.login(_uid)).done(function(l){
                     _account_id = l.account_id;
+                });
+                
+                $avatarImg = $('#avatar-img');
+                $nameBox = $('#name-box');
+                $avatarImg.attr('src', u.avatar_url);
+                $avatarImg.on('mouseover', function(){
+                    $nameBox = $('#name-box');
+                    $nameBox
+                        .text(_userObj.sortable_name)
+                        .css({
+                            left: $avatarImg.offset().left + $avatarImg.outerWidth()/2 - $nameBox.outerWidth()/2,
+                            top: $avatarImg.offset().top + $avatarImg.outerHeight() + 5
+                        })
+                        .fadeIn();
+                });
+                $avatarImg.on('mouseout', function(){
+                    $nameBox.hide();
                 });
             }).fail(function(jqXHR, textStatus, errorThrown){
                 if (jqXHR.status == '401') {
