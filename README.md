@@ -6,7 +6,7 @@ Here "lightweight" means using least frameworks/plugins as possible. It's writte
 and little bit PHP is also used to handle api requests as well as  encrypt user token. For higher speed, and also under limitation
 of CityU's personal page, it doesn't use bootstrap, SQL or any other tools/frameworks.
 
-Used [https://github.com/gilfether/phpcrypt] as there is no mcrypt module on CityU's personal page.
+Used https://github.com/gilfether/phpcrypt as there is no mcrypt module on CityU's personal page.
 
 Currently it's under test and I'm not sure whether I can apply for a developer key succesfully, so it simply uses user-generated
 access token...
